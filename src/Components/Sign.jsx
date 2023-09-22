@@ -1,10 +1,11 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 
  //import firebase
 import {auth, googleProvider} from "../config/firebase"
 import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-
+import {database} from '../config/firebase'
+import {getDoc, collection} from "firebase/firestore"
 
 //import files
 import'../styles/Sign.css';
@@ -36,6 +37,9 @@ const toggle=()=>{
 
 
         const validation = () => password === confirmPassword;
+
+        console.log(auth?.currentUser?.email)
+        console.log(auth?.currentUser?.photoURL)
 
         const signIn = async (e) => {
           try{
@@ -74,26 +78,35 @@ const toggle=()=>{
         };
 
 
-        const logout = async (e) => {
+        const logout = async () => {
           try{
            await signOut(auth) }
            catch(err){
             console.error(err);
            }
 
-          e.preventDefault(); // Prevent the form from submitting
-          if (!validation()) {
-            alert('Password not matched');
-            return; // Don't proceed to Home page if password is not matched
-          }
-          // TODO: Handle successful form submission (e.g., navigate to Home page)
-          else{
+          // e.preventDefault(); // Prevent the form from submitting
+          // if (!validation()) {
+          //   alert('Password not matched');
+          //   return; // Don't proceed to Home page if password is not matched
+          // }
+          // // TODO: Handle successful form submission (e.g., navigate to Home page)
+          // else{
            
-          }
+          // }
         };
 
         
+        const moviesCollectionRef = collection(database, "")
       
+        const [movieList, setMovieList] = useState();
+
+        useEffect(() => {
+          const getMovieList = async () => {
+            const data = await getDoc(moviesCollectionRef)
+          };
+          
+                  }, []);
         
     
         return (
@@ -102,7 +115,7 @@ const toggle=()=>{
         <h2>Login</h2>
 
         <form 
-        onSubmit={[signIn, signInWithPopup, logout]}
+        // onSubmit={[signIn, signInWithPopup, logout]}
         >
 
             <div className="user-box">
@@ -135,20 +148,20 @@ const toggle=()=>{
              'Password not matched'}</div>
 
             <div className="button-form">
-              <Link to='/home'> <button id="submit" type='submit' onSubmit={signIn}>Sign In</button></Link>
+              <Link to='/home'> <button className="submit" type='submit' onSubmit={signIn}>Sign In</button></Link>
             </div>
 
 
             <div className="button-form">
-              <Link to='/home'> <button id="submit" type='submit' 
-              onSubmit={signInWithGoogle}>Sign In with Google</button></Link>
+              <Link to='/home'> <button className="submit"  
+              onClick={signInWithGoogle}>Sign In with Google</button></Link>
             </div>
 
 
             
             <div className="button-form">
-               <button id="submit" type='submit' 
-              onSubmit={logout}>Logout</button>
+               <button className="submit"  
+              onClick={logout}>Logout</button>
             </div>
 
 

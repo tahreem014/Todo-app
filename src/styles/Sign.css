@@ -57,7 +57,7 @@ margin-bottom: 2px;
 
 
 
-#submit {
+.submit {
     padding: 10px 20px;
     background-color: transparent;
     color: #fff;
@@ -71,7 +71,7 @@ margin-bottom: 2px;
     cursor: pointer;
 }
 
- #submit:hover {
+ .submit:hover {
     background: #8F7CEC;
     color: #fff;
     border-radius: 5px;
