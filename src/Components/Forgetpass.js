@@ -17,8 +17,8 @@ function Forgetpass() {
                 value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="button-form">
-               <button className="submit" type='submit' 
-              onSubmit={signIn}>Forget password</button>
+               <button className="btn" type='submit' 
+              onSubmit={signIn}>Reset password</button>
             </div>
     </div>
   )

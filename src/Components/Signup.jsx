@@ -1,37 +1,32 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 
 
  //import firebase
-import {auth, googleProvider} from "../config/firebase"
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import {auth } from "../config/firebase"
+import { createUserWithEmailAndPassword} from 'firebase/auth';
 import {db} from '../config/firebase'
-import {query, addDoc, collection, where, getDocs} from "firebase/firestore"
+import {addDoc, collection} from "firebase/firestore"
 
 //import files
-import'../styles/Sign.css';
+import'../styles/Signup.css';
 // import Forgetpassword from './Forgetpass';
 // import Home from './Home';
+
+// Router Link 
+import { Link} from 'react-router-dom';
 
 // import icons 
 import {FaEyeSlash} from 'react-icons/fa'
 import {FaEye} from 'react-icons/fa'
 
-// Router Link 
-import { Link, useNavigate} from 'react-router-dom';
 
-
-function Sign() {
+function Signup() {
 const [open, setOpen]  = useState(false)
 
 const toggle=()=>{
   setOpen(!open)
 }
 
-  // const [formData, setFormData] = useState({
-  //           email: "",
-  //           password: "",
-  //           confirmPassword: ""
-  //       })
 
   const [email, setEmail] = useState("")
   const [name, setName] = useState("");
@@ -39,12 +34,15 @@ const toggle=()=>{
   const [confirmPassword, setConfirmPassword] = useState("")
 
 
+        // validation 
         const validation = () => password === confirmPassword;
 
         console.log(auth?.currentUser?.email)
         console.log(auth?.currentUser?.photoURL)
 
-        const signIn = async (e) => {
+
+        // Sign IN 
+        const signUp = async (e) => {
           e.preventDefault(); // Prevent the form from submitting
           if (!validation()) {
             alert('Password not matched');
@@ -57,6 +55,7 @@ const toggle=()=>{
 
           try{
            const res = await createUserWithEmailAndPassword(auth, name, email, password, confirmPassword)
+           console.log(res)
            const user = res.user;
            await addDoc(collection(db, "users"), {
              uid: user.uid,
@@ -73,83 +72,15 @@ const toggle=()=>{
            }
 
           
-        };
-
-        const signInWithGoogle = async (e) => {
-          
-
-          try{
-           const res = await signInWithPopup(auth, googleProvider) 
-          const user = res.user;
-          const q = query(collection(db, "users"), where("uid", "==", user.uid));
-          const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: "google",
-        email: user.email,
-      });
-    }
-    console.log("Data added to Firestore successfully");
-          }
-           catch(err){
-            console.error(err);
-           }
-
-           e.preventDefault(); // Prevent the form from submitting
-          
-        };
-
-
-        const logout = async () => {
-          try{
-           await signOut(auth) }
-           catch(err){
-            console.error(err);
-           }
-
-          // e.preventDefault(); // Prevent the form from submitting
-          // if (!validation()) {
-          //   alert('Password not matched');
-          //   return; // Don't proceed to Home page if password is not matched
-          // }
-          // // TODO: Handle successful form submission (e.g., navigate to Home page)
-          // else{
-           
-          // }
-        };
-
-        
-        // const moviesCollectionRef = collection(database, "")
-      
-        // const [movieList, setMovieList] = useState();
-
-        // useEffect(() => {
-        //   const getMovieList = async () => {
-        //     try{
-        //     const data = await getDoc(moviesCollectionRef)
-        //     const filterData = data.doc.map((doc) => ({
-        //       ...doc.data(),
-        //       id: doc.id
-
-        //     }));
-        //     }catch(err){
-        //       console.error(err)
-        //     }
-        //   };
-        //   getMovieList();
-        //           }, []);
-        
-        const navigate = useNavigate()
+        };        
     
         return (
     <div>
-      <div className="login-box">
+      <div className="signup-box">
         <h2>Login</h2>
 
         <form 
-        onSubmit={signIn}
+        onSubmit={signUp}
         >
           <div className='user-box'>
           <input
@@ -188,38 +119,15 @@ const toggle=()=>{
             <div className='match'> { validation ()? '' :
              'Password not matched'}</div>
 
+
             <div className="button-form">
               <Link to='/home'> 
               <button className="submit" type='submit'
-               onSubmit={signIn}>Sign In</button>
+               onSubmit={signUp}>Sign up</button>
                </Link>
             </div>
 
-
-            <div className="button-form">
-              <Link to='/home'> 
-              <button className="submit"  
-              onClick={signInWithGoogle}>Sign In with Google</button>
-              </Link>
-            </div>
-
-
             
-            <div className="button-form">
-               <button className="submit"  
-              onClick={logout}>Logout</button>
-            </div>
-
-
-
-            <div className='button-form'>
-            <button className='submit' onClick={() => navigate('/forgetpassword')}>Forget password </button>
-            </div>
-
-            
-            
-      
-
         </form>
     </div>
     
@@ -227,4 +135,4 @@ const toggle=()=>{
         )
 }
 
-export default Sign
+export default Signup
