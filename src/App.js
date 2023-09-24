@@ -11,17 +11,12 @@ function App() {
   return (
    <>
 
-      <Router>
-
-<Sign />
-
+<Router>
 <Routes>
-
+<Route path='/' exact Component={Sign}></Route>
   <Route path='/home' exact Component={Home}></Route>
   <Route path='/forgetpassword' exact Component={Forgetpassword}></Route>
-
 </Routes>
-
     </Router>
 
    </>
