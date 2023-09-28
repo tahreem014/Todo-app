@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200$display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200$display=swap');
 :root{
     --font-style: 'Nunito Sans' , sans-serif;
-}
+} */
 
 * {
     box-sizing: border-box;
@@ -9,6 +9,21 @@
 
 body {
     background: #0175C2;
-    font-family: var(--font-style);
+    font-family:'Times New Roman', Times, serif;
 }
  
+.icon{
+    position: relative;
+    left: 18rem;
+    top: 2rem;
+    color: black;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+
+::placeholder
+ {
+    color: black;
+    font-size: 14px;
+}

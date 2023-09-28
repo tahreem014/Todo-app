@@ -1,5 +1,5 @@
 import React from 'react'
-import {auth, } from "../config/firebase"
+import {auth } from "../config/firebase"
 import {signOut } from 'firebase/auth';
 
 
@@ -22,7 +22,8 @@ function Home() {
     <div>
       <div className="button-form">
                <button className="submit"  
-              onClick={logout}>Logout</button>
+              onClick={logout}
+              >Logout</button>
                 </div>
     </div>
   )

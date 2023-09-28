@@ -1,4 +1,4 @@
-.password {
+.login-box {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -10,7 +10,7 @@
     border-radius: 10px;
 }
 
-.password h2 {
+.login-box h2 {
     margin: 0 0 30px;
     padding: 0;
     color: black;
@@ -18,7 +18,7 @@
 }
 
 
-.password .user-box input {
+.login-box .user-box input {
     position: relative;
     width: 18.3rem;
     padding: 12px 4px;
@@ -31,23 +31,27 @@
     background: transparent;
 }
 
-::placeholder {
+
+
+p{
     color: black;
-    font-size: 14px;
 }
 
-.btn {
-    padding: 10px 20px;
-    background-color: #0175C2;
+
+
+.btn{
+    padding: 10px 40px;
     color: #fff;
-    font-size: 16px;
+    font-size: 14px;
     text-decoration: none;
     overflow: hidden;
     transition: 0.5s;
     letter-spacing: 4px;
+    background-color: #0175C2;
     border: none;
     margin: auto;
     cursor: pointer;
+    align-items: center;
 }
 
  .btn:hover {
@@ -57,9 +61,14 @@
     box-shadow: 0 0 5px #8F7CEC, 0 0 25px #8F7CEC, 0 0 50px #8F7CEC, 0 0 100px #8F7CEC;
 }
 
-.button-form {
-    display: flex;
-    flex-direction: row;
+.button{
+    /* display: flex;
+    flex-direction: column; */
+    text-align: center;
     margin-top: 20px;
 }
 
+.link{
+    color: #0175C2;
+    text-decoration: none;
+}

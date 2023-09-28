@@ -2,45 +2,45 @@ import React, { useState} from 'react'
 
 
  //import firebase
-import {auth} from "../config/firebase"
-import { signInWithEmailAndPassword} from 'firebase/auth';
+// import {auth} from "../config/firebase"
+// import {signInWithEmailAndPassword} from 'firebase/auth';
 // import {db} from '../config/firebase'
 // import {query, addDoc, collection, where, getDocs} from "firebase/firestore"
 
 //import files
-import'../styles/Sign.css';
-// import Forgetpassword from './Forgetpass';
-// import Home from './Home';
+import'./login.css';
+
 
 // import icons 
 import {FaEyeSlash} from 'react-icons/fa'
 import {FaEye} from 'react-icons/fa'
 
 // Router Link 
-import { Link, useNavigate} from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 
-function Sign() {
+function Login() {
 const [open, setOpen]  = useState(false)
 
 const toggle=()=>{
   setOpen(!open)
 }
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-
-  const SignIn = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
-  };
+  // const [email, setEmail] = useState("")
+  // const [password, setPassword] = useState("")
 
 
-        const navigate = useNavigate()
+  // const logIn = async (e) => {
+  //   e.preventDefualt();
+
+  //   try {
+  //     await signInWithEmailAndPassword(auth, email, password);
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.message);
+  //   }
+  // };
+
     
         return (
     <div>
@@ -51,7 +51,8 @@ const toggle=()=>{
 
             <div className="user-box">
                 <input type="text" name="email" required=''  placeholder='Username'
-                value={email} onChange={(e) => setEmail(e.target.value)} />
+                // value={email} onChange={(e) => setEmail(e.target.value)}
+                 />
             </div>
             
             
@@ -63,7 +64,7 @@ const toggle=()=>{
                 <div className="user-box ">
                 <input type={open === false? 'password': 'text'}
                  name="password" required=" " placeholder='Password' 
-                 value={password} onChange={(e) => setPassword( e.target.value )}
+                //  value={password} onChange={(e) => setPassword( e.target.value )}
                  />
             </div>
 
@@ -75,7 +76,8 @@ const toggle=()=>{
             <div className="button">
               <Link to='/home'> 
               <button className="btn" type='submit'
-               onSubmit={SignIn}>Sign In</button>
+              //  onSubmit={logIn}
+               >Sign In</button>
                </Link>
             </div>
 
@@ -93,4 +95,4 @@ const toggle=()=>{
         )
 }
 
-export default Sign
+export default Login

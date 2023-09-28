@@ -2,7 +2,7 @@
 import './App.css'
 import Forgetpassword from './Components/Forgetpass'
 import Home from './Components/Home'
-import Sign from './Components/Login'
+import login from './Components/Login'
 import Signup  from './Components/Signup'
 
 // import router 
@@ -14,7 +14,7 @@ function App() {
 
 <Router>
 <Routes>
-  <Route path='/' exact Component={Sign}></Route>
+  <Route path='/' exact Component={login}></Route>
   <Route path='/signup' exact Component={Signup}></Route>
   <Route path='/home' exact Component={Home}></Route>
   <Route path='/forgetpassword' exact Component={Forgetpassword}></Route>
