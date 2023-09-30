@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 //import firebase
-import { auth } from "../config/firebase";
+import { auth } from "../../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 //import files
 import "./signup.css";
@@ -45,16 +46,24 @@ function Signup() {
 
     console.log("before");
     try {
-      await createUserWithEmailAndPassword(
+    const res =  await createUserWithEmailAndPassword(
         auth,
         email,
         password,
         confirmPassword
-      );
+      ); 
+
+        const docRef = await addDoc(collection(db, "users"), {
+              uid: res.user.uid,
+              email: email,    
+            });
+            console.log("Document written with ID: ", docRef.id);
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
+
       const userData = {
         email,
-        password,
-        confirmPassword,
       };
       const options = {
         method: "POST",
@@ -73,10 +82,10 @@ function Signup() {
       } else {
         alert("Error occured");
       }
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+    // } catch (err) {
+    //   console.error(err);
+    //   alert(err.message);
+    // }
   };
 
   return (
