@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //import firebase
 import { auth } from "../../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { collection } from "firebase/database";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import {db} from "../../config/firebase"
 
 
 //import files
-import "./signup.css";
+import "./Style.css";
 
 // Router Link
 import { Link } from "react-router-dom";
@@ -25,6 +28,8 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [userData, setUserData] = useState([]);
   console.log("correct");
 
   // validation
@@ -46,47 +51,81 @@ function Signup() {
 
     console.log("before");
     try {
-    const res =  await createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
         auth,
         email,
         password,
         confirmPassword
       ); 
 
-        const docRef = await addDoc(collection(db, "users"), {
-              uid: res.user.uid,
-              email: email,    
-            });
-            console.log("Document written with ID: ", docRef.id);
-          } catch (e) {
-            console.error("Error adding document: ", e);
-          }
+        // const docRef = await addDoc(collection(db, "users"), {
+        //       uid: res.user.uid,
+        //       email: email,    
+        //     });
+        //     console.log("Document written with ID: ", docRef.id);
+        //   } catch (e) {
+        //     console.error("Error adding document: ", e);
+        //   }
 
-      const userData = {
-        email,
-      };
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      };
+        await addDoc(collection(db, "userData"),{
+          email: email,
+      });
 
-      const res = await fetch(
-        "https://reactauth-3db27-default-rtdb.asia-southeast1.firebasedatabase.app/userData.json",
-        options
-      );
-      if (res.ok) {
-        alert("Data store");
-      } else {
-        alert("Error occured");
-      }
-    // } catch (err) {
-    //   console.error(err);
-    //   alert(err.message);
-    // }
+      setEmail("");
+  
+
+      // const userData = {
+      //   email
+      // };
+      // const options = {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(userData),
+      // };
+
+      // const res = await fetch(
+      //   "https://reactauth-3db27-default-rtdb.asia-southeast1.firebasedatabase.app/userData.json",
+      //   options
+      // );
+      // if (res.ok) {
+      //   alert("Data store");
+      // } else {
+      //   alert("Error occured");
+      // }
+    } 
+    catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
+
+
+//   useEffect(() => {
+//     collection(db, "userData").onSnapshot((snapshot) => {
+//         setUserData(
+//             snapshot.docs.map((doc) => ({
+//                 id: doc.id,
+//                 data: doc.data(),
+//             }))
+//         );
+//     });
+//     console.log({ userData });
+// }, []);
+
+useEffect(() => {
+  const fetchData = async () => {
+    const querySnapshot = await getDocs(collection(db, "userData"));
+    const userDataArray = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+    setUserData(userDataArray);
+  };
+
+  fetchData();
+}, []);
 
   return (
     <div>

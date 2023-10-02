@@ -1,9 +1,9 @@
 
 import './App.css'
-import Forgetpassword from './Components/Forgetpass'
-import Home from './Components/Home'
-import login from './Components/Login'
-import Signup  from './Components/Signup'
+import Forgetpassword from './Components/Forgetpass/App'
+import Home from './Components/Home/App'
+import login from './Components/Login/App'
+import Signup  from './Components/Signup/App'
 
 // import router 
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
