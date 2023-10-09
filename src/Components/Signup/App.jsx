@@ -57,23 +57,16 @@ function Signup() {
         password,
         confirmPassword
       ); 
-
-        // const docRef = await addDoc(collection(db, "users"), {
-        //       uid: res.user.uid,
-        //       email: email,    
-        //     });
-        //     console.log("Document written with ID: ", docRef.id);
-        //   } catch (e) {
-        //     console.error("Error adding document: ", e);
-        //   }
-
-        await addDoc(collection(db, "userData"),{
+      
+      // add data to firestore 
+      await addDoc(collection(db, "userData"),{
           email: email,
       });
 
       setEmail("");
   
 
+      // add data in realtime databse 
       // const userData = {
       //   email
       // };
@@ -101,18 +94,6 @@ function Signup() {
     }
   };
 
-
-//   useEffect(() => {
-//     collection(db, "userData").onSnapshot((snapshot) => {
-//         setUserData(
-//             snapshot.docs.map((doc) => ({
-//                 id: doc.id,
-//                 data: doc.data(),
-//             }))
-//         );
-//     });
-//     console.log({ userData });
-// }, []);
 
 useEffect(() => {
   const fetchData = async () => {
