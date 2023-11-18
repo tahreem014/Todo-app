@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // imports
 import "./Style.css";
@@ -12,9 +12,14 @@ import { AiOutlineDelete } from "react-icons/ai";
 // firestore
 import { auth } from "../../config/firebase";
 import { signOut } from "firebase/auth";
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../../config/firebase";
 
 function Home() {
   const [inputFields, setInputFields] = useState([""]); // State to store input fields
+  const [isChecked, setIsChecked] = useState(false);
+  const [todos, setTodos] = useState([]);
 
   // Logout
   const logout = async (e) => {
@@ -27,16 +32,65 @@ function Home() {
     e.preventDefault(); // Prevent the form from submitting
   };
 
+  const input = async () => {
+    if (inputFields.length === 0 || inputFields[0] === "") {
+      return; // Do not add empty input
+    }
+
+    await addDoc(collection(db, "todos"), {
+      item: inputFields[0],
+      id: uuidv4(),
+      userId: auth.currentUser.uid,
+    });
+
+    setInputFields([...inputFields, ""]);
+    console.log("add todos");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+      const querySnapshot = await getDocs(collection(db, "todos"));
+      console.log("collection")
+      const userDataArray = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setTodos(userDataArray);
+      console.log("show  data")
+    }
+      catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+    if (auth.currentUser) {
+      fetchData();
+    }
+    console.log("get todos");
+  }, [auth.currentUser]);
+
   // Function to add new input field
   const addInputField = () => {
-    setInputFields([...inputFields, ""]);
+    setTodos([...todos, { id: uuidv4(), item: "" }]);
   };
 
   // Function to remove an input field
-  const removeInputField = (index) => {
-    const updatedFields = [...inputFields];
-    updatedFields.splice(index, 1);
-    setInputFields(updatedFields);
+  const removeInputField = async (id) => {
+    try {
+      await deleteDoc(doc(db, "todos", id));
+  
+      // Now, update the local state to remove the deleted item
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Error deleting todo from Firestore:", error);
+    }
+  };
+
+  
+  const handleCheckboxChange = (isChecked) => {
+    setIsChecked(!isChecked);
   };
 
   return (
@@ -52,35 +106,52 @@ function Home() {
         </Link>
       </div>
 
+      <button className="save" onClick={input}>
+        Save
+      </button>
+
       <div className="input-container">
-        {inputFields.map((input, index) => (
-          <div key={index}>
-            <input type="checkbox" className="check" />
+        {todos.map((todo) => (
+          <div key={todo.id}>
+            <input
+              type="checkbox"
+              className="check"
+              checked={todo.isChecked}
+              onChange={() => handleCheckboxChange(todo.id)}
+            />
 
             <input
-              className="text"
+              className={todo.isChecked ? "gray-input text" : "text"}
               type="text"
-              value={input}
+              value={todo.item}
+              // onChange={(e) => {
+              //   const updatedFields = [...inputFields];
+              //   updatedFields[index] = e.target.value;
+              //   setInputFields(updatedFields);
+              // }}
               onChange={(e) => {
-                const updatedFields = [...inputFields];
-                updatedFields[index] = e.target.value;
-                setInputFields(updatedFields);
+                const updatedTodos = todos.map((t) =>
+                  t.id === todo.id ? { ...t, item: e.target.value } : t
+                );
+                setTodos(updatedTodos);
               }}
             />
 
-            <AiOutlineDelete
-              className="delete"
-              onClick={() => removeInputField(index)}
-            />
-            <AiOutlinePlus
-              className="plus"
-              onClick={() => addInputField(index)}
-            />
           </div>
         ))}
       </div>
+
+        <AiOutlineDelete
+          className="delete"
+          onClick={() => removeInputField(todos.id)}
+        />
+
+        <AiOutlinePlus
+          className="plus"
+          onClick={addInputField}
+        />
+
     </div>
   );
 }
-
 export default Home;

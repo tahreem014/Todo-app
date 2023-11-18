@@ -61,6 +61,7 @@ function Signup() {
       // add data to firestore 
       await addDoc(collection(db, "userData"),{
           email: email,
+          
       });
 
       setEmail("");

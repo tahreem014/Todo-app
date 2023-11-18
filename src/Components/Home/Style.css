@@ -42,9 +42,35 @@ position: absolute;
     border-radius: 8px;
     box-shadow: 0 0 5px #3f6ce9, 0 0 25px #3f6eee, 0 0 50px #3f6ce7, 0 0 100px #3d6beb;
 }
-
+.save{
+    padding: 10px 30px;
+    color: #0175C2;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    overflow: hidden;
+    transition: 0.5s;
+    letter-spacing: 4px;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    margin: auto;
+    cursor: pointer;
+    align-items: center;
+    position: absolute;
+    right: 37%;
+    top: 17.25%;
+}
+.save:hover{
+    background: #0a0ddb;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #3f6ce9, 0 0 25px #3f6eee, 0 0 50px #3f6ce7, 0 0 100px #3d6beb;
+}
+    
 .text{   
     width: 45%;
+    height: auto;
     padding: 12px;
     background: #fff;
     color: black;
@@ -69,11 +95,47 @@ position: absolute;
     border: 2px solid black;
     height: 1rem;
     width: 1rem;
+    cursor: pointer;
   }
 
-.delete, .plus{
+.delete{
     font-size: 20px;
     color: black;
     font-weight: 900;
+    background-color: #fff;
+    background-size: 4rem;
+    border-radius: 50%;
+    border: .5px solid black;
+    padding: 2px 2px;
+    margin: 0px 4px;
+    cursor: pointer;
+    position: absolute;
+    right: 49%;
+    top: 18%;
+
+    
 }
 
+.plus{
+    font-size: 20px;
+    color: black;
+    font-weight: 900;
+    background-color: #fff;
+    background-size: 4rem;
+    border-radius: 50%;
+    border: .5px solid black;
+    padding: 2px 2px;
+    margin: 0px 4px;
+    cursor: pointer;
+    position: absolute;
+    right: 47%;
+    top: 18%;
+
+    
+}
+
+.gray-input {
+    background-color: #f1eeee; 
+    color: #969191; 
+    border: 1px solid #aaa; 
+  }
