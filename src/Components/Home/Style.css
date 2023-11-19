@@ -98,8 +98,8 @@ position: absolute;
     cursor: pointer;
   }
 
-.delete{
-    font-size: 20px;
+.delete, .edit{
+    font-size: 21px;
     color: black;
     font-weight: 900;
     background-color: #fff;
@@ -109,10 +109,6 @@ position: absolute;
     padding: 2px 2px;
     margin: 0px 4px;
     cursor: pointer;
-    position: absolute;
-    right: 49%;
-    top: 18%;
-
     
 }
 
