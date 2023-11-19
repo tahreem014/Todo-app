@@ -9,18 +9,27 @@ import { BiSolidNotepad } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
 import { CiEdit } from "react-icons/ci";
+import { MdOutlineSaveAlt } from "react-icons/md";
 
 // firestore
 import { auth } from "../../config/firebase";
 import { signOut } from "firebase/auth";
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../../config/firebase";
+import { updateDoc } from "firebase/firestore";
 
 function Home() {
   const [inputFields, setInputFields] = useState([""]); // State to store input fields
   const [isChecked, setIsChecked] = useState(-1);
   const [todos, setTodos] = useState([]);
+  const [editTodoId, setEditTodoId] = useState(null);
 
   // Logout
   const logout = async (e) => {
@@ -45,35 +54,33 @@ function Home() {
     // });
 
     try {
-      for (const newTodo of todos) 
+      // Add the new todo to Firestore
+      for (const newTodo of todos)
+        await addDoc(collection(db, "todos"), {
+          item: newTodo.item,
+          id: newTodo.id,
+          userId: auth.currentUser.uid,
+        });
 
-    // Add the new todo to Firestore
-    await addDoc(collection(db, "todos"), {
-      item: newTodo.item,
-      id: newTodo.id,
-      userId: auth.currentUser.uid,
-    });
-
-    setInputFields([...inputFields, ""]);
-    console.log("add todo");
-  } catch (error) {
-    console.error("Error adding todo to Firestore:", error);
-  }
-};
+      setInputFields([...inputFields, ""]);
+      console.log("add todo");
+    } catch (error) {
+      console.error("Error adding todo to Firestore:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-      const querySnapshot = await getDocs(collection(db, "todos"));
-      console.log("collection")
-      const userDataArray = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setTodos(userDataArray);
-      console.log("show  data")
-    }
-      catch (error) {
+        const querySnapshot = await getDocs(collection(db, "todos"));
+        console.log("collection");
+        const userDataArray = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setTodos(userDataArray);
+        console.log("show  data");
+      } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
@@ -98,12 +105,11 @@ function Home() {
   // };
 
   const addInputField = () => {
-    
-      // Create a new todo with a unique ID and empty item
-      const newTodo = { id: uuidv4(), item: "" };
-  
-      // Update the local state to add the new todo
-      setTodos((prevTodos) => [...prevTodos, newTodo]);
+    // Create a new todo with a unique ID and empty item
+    const newTodo = { id: uuidv4(), item: "" };
+
+    // Update the local state to add the new todo
+    setTodos((prevTodos) => [...prevTodos, newTodo]);
   };
 
   // Function to remove an input field
@@ -113,13 +119,11 @@ function Home() {
       await deleteDoc(doc(db, "todos", id));
 
       // Now, update the local state to remove the deleted item
-      setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== id));
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
 
       localStorage.setItem(
         "todos",
-        JSON.stringify(
-          todos.filter((todo) => todo.id !== id)
-        )
+        JSON.stringify(todos.filter((todo) => todo.id !== id))
       );
 
       console.log("Item deleted successfully");
@@ -128,7 +132,6 @@ function Home() {
     }
   };
 
-  
   // const handleCheckboxChange = (isChecked) => {
   //   setIsChecked(!isChecked);
   // };
@@ -142,8 +145,39 @@ function Home() {
   };
 
   const editInputField = async (id) => {
-    
-  }
+    setEditTodoId(id);
+    console.log("edit clicked");
+    const todoToEdit = todos.find((todo) => todo.id === id);
+    console.log("edited");
+
+    // Set the inputFields state to the item of the todoToEdit
+    setInputFields([todoToEdit.item]);
+  };
+
+  const saveEdit = async (id) => {
+    try {
+      console.log("saving item");
+      const todoToEdit = todos.find((todo) => todo.id === id);
+
+      if (todoToEdit) {
+        console.log("Input Fields before update:", inputFields);
+        // Update the content of the selected todo in Firestore
+        // Get a reference to the document
+        const todoRef = doc(db, "todos", id);
+
+        // Update the content of the selected todo in Firestore
+        await updateDoc(todoRef, {
+          item: inputFields[0], // Use the updated inputFields state
+          userId: auth.currentUser.uid,
+        });
+        console.log("Todo edited successfully");
+        setEditTodoId(null);
+        console.log("saved item");
+      }
+    } catch (error) {
+      console.error("Error editing todo in Firestore:", error);
+    }
+  };
 
   return (
     <div>
@@ -175,40 +209,56 @@ function Home() {
             <input
               className={todo.isChecked ? "gray-input text" : "text"}
               type="text"
-              value={todo.item}
+              // value={todo.item}
               // onChange={(e) => {
               //   const updatedFields = [...inputFields];
               //   updatedFields[index] = e.target.value;
               //   setInputFields(updatedFields);
               // }}
+              // onChange={(e) => {
+              //   const updatedTodos = todos.map((t) =>
+              //     t.id === todo.id ? { ...t, item: e.target.value } : t
+              //   );
+              //   setTodos(updatedTodos);
+              // }}
+
+              value={todo.id === editTodoId ? inputFields[0] : todo.item}
               onChange={(e) => {
-                const updatedTodos = todos.map((t) =>
-                  t.id === todo.id ? { ...t, item: e.target.value } : t
-                );
-                setTodos(updatedTodos);
+                if (editTodoId === todo.id) {
+                  const updatedFields = [e.target.value];
+                  setInputFields(updatedFields);
+                } else {
+                  const updatedTodos = todos.map((t) =>
+                    t.id === todo.id ? { ...t, item: e.target.value } : t
+                  );
+                  setTodos(updatedTodos);
+                }
               }}
             />
 
+            <AiOutlineDelete
+              className="delete"
+              onClick={() => removeInputField(todo.id)}
+            />
 
-        <AiOutlineDelete
-          className="delete"
-          onClick={() => removeInputField(todo.id)}
-          />
-          
-          <CiEdit 
-          className="edit"
-          onClick={() => editInputField(todo.id)}
-          />
-
+            {editTodoId === todo.id ? (
+              // Save changes button when in edit mode
+              <MdOutlineSaveAlt
+                className="editSave"
+                onClick={() => saveEdit(todo.id)}
+              />
+            ) : (
+              // Edit button when not in edit mode
+              <CiEdit
+                className="edit"
+                onClick={() => editInputField(todo.id)}
+              />
+            )}
           </div>
         ))}
       </div>
 
-        <AiOutlinePlus
-          className="plus"
-          onClick={addInputField}
-        />
-
+      <AiOutlinePlus className="plus" onClick={addInputField} />
     </div>
   );
 }
