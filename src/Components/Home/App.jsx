@@ -55,12 +55,13 @@ function Home() {
 
     try {
       // Add the new todo to Firestore
-      for (const newTodo of todos)
-        await addDoc(collection(db, "todos"), {
-          item: newTodo.item,
-          id: newTodo.id,
-          userId: auth.currentUser.uid,
-        });
+      for (const newTodo of todos) 
+          await addDoc(collection(db, "todos"), {
+            item: newTodo.item,
+            id: newTodo.id,
+            userId: auth.currentUser.uid,
+            isChecked: newTodo.isChecked,
+          });
 
       setInputFields([...inputFields, ""]);
       console.log("add todo");
@@ -85,15 +86,16 @@ function Home() {
       }
     };
 
-    const storedTodos = localStorage.getItem("todos");
-    if (storedTodos) {
-      setTodos(JSON.parse(storedTodos));
-    } else {
-      fetchData();
-    }
+    // const storedTodos = localStorage.getItem("todos");
+    // if (storedTodos) {
+    //   setTodos(JSON.parse(storedTodos));
+    // } else {
+    //   fetchData();
+    // }
+    const storedTodos = JSON.parse(localStorage.getItem("todos"));
+  setTodos(storedTodos);
 
-    fetchData();
-    if (auth.currentUser) {
+    if (!auth.currentUser) {
       fetchData();
     }
     console.log("get todos");
@@ -169,6 +171,7 @@ function Home() {
         await updateDoc(todoRef, {
           item: inputFields[0], // Use the updated inputFields state
           userId: auth.currentUser.uid,
+          
         });
         console.log("Todo edited successfully");
         setEditTodoId(null);

@@ -24,6 +24,6 @@ body {
 
 ::placeholder
  {
-    color: black;
+    color: rgb(153, 153, 153);
     font-size: 14px;
 }

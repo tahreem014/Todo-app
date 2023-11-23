@@ -66,10 +66,17 @@ p{
     /* display: flex;
     flex-direction: column; */
     text-align: center;
-    margin-top: 20px;
+    margin-top: 1.5rem;
 }
 
 .link{
     color: #0175C2;
     text-decoration: none;
+}
+.forget{
+    color: #0175C2;
+    text-decoration: none;
+    position: absolute;
+    right: 16.5%;
+    top: 15.5rem;
 }
